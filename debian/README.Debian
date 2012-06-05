@@ -1,0 +1,19 @@
+Debian README for mozilla-gnome-keyring package
+===============================================
+
+This package is currently in experimental because of the unstable nature of the
+XULrunner ABI. This means that even though the same source package (e.g. this)
+can compile successfully against different versions of xulrunner, the resultant
+binary packages are only compatible with the version it was compiled against.
+
+For example, if a new version of iceweasel or icedove were to be uploaded to the
+repositories, this extension would break without notice. This is not acceptable
+for the main archive, so this extension currently lives in experimental.
+
+The enigmail package is in a similar situation, but they have more active Debian
+maintainers to be able to periodically rebuild that package. Additionally, they
+only care about supporting icedove, whereas this extension should support both
+iceweasel *and* icedove, which is more problematic as they tend not to be in
+sync version-wise as they are maintained by different teams.
+
+Hopefully a better solution will be found at some point in the future.
