@@ -90,7 +90,7 @@ $(TARGET): GnomeKeyring.cpp GnomeKeyring.h Makefile
 	chmod +x $@
 
 xpcom_abi: xpcom_abi.cpp Makefile
-	$(CXX) $< -o $@ $(XUL_CFLAGS) $(XUL_LDFLAGS) $(XPCOM_ABI_FLAGS) $(CXXFLAGS)
+	$(CXX) $< HashFunctions.cpp -o $@ $(XUL_CFLAGS) $(XUL_LDFLAGS) $(XPCOM_ABI_FLAGS) $(CXXFLAGS)
 
 tarball:
 	git archive --format=tar \
