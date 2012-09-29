@@ -81,7 +81,7 @@ xpi/install.rdf: install.rdf Makefile
 
 xpi/chrome.manifest: chrome.manifest Makefile
 	mkdir -p xpi
-	sed -e 's/$${PLATFORM}/'$(PLATFORM)'/g' \
+	sed -e 's	$${PLATFORM}	'$(PLATFORM)'	g' \
 	    $< > $@
 
 $(TARGET): GnomeKeyring.cpp GnomeKeyring.h Makefile
