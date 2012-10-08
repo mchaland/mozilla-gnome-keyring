@@ -110,13 +110,19 @@ Tested on:
 - Arch Linux
 
 Known Bugs:
-- Problems on Ubuntu 8.10 with Thunderbird 3.1.6:
+
+- Ubuntu 12.04 needs extra tweaks. See [1] for a version that builds out
+  of the box and [2] for more detailed instructions.
+
+- Ubuntu 8.10 with Thunderbird 3.1.6:
     It is necessary to copy libxul.so and libxpcom.so from
     /usr/lib/xulrunner-*/ into /usr/lib/thunderbird-*/ folder.
-    See issue #4. I'd be thankful for any hints why this problem exists,
+    See [3]. I'd be thankful for any hints why this problem exists,
     and its status on different distributions.
     - There is no problem on gentoo.
 
 --
-#4: https://github.com/mdlavin/firefox-gnome-keyring/issues/#issue/4
 
+[1] https://github.com/fat-lobyte/mozilla-gnome-keyring/tree/ubuntu
+[2] https://github.com/infinity0/mozilla-gnome-keyring/issues/20
+[3] https://github.com/mdlavin/firefox-gnome-keyring/issues/#issue/4

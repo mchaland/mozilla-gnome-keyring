@@ -1,8 +1,8 @@
 PACKAGE          ?= mozilla-gnome-keyring
 VERSION          ?= $(shell git describe --tags 2>/dev/null || date +dev-%s)
 # if these are empty, we will attempt to auto-detect correct values
-XUL_VER_MIN      ?=
-XUL_VER_MAX      ?=
+#XUL_VER_MIN      ?=
+#XUL_VER_MAX      ?=
 # package distribution variables
 FULLNAME         ?= $(PACKAGE)-$(VERSION)
 ARCHIVENAME      ?= $(FULLNAME)
@@ -29,7 +29,7 @@ CXXFLAGS         += -Wall -fno-rtti -fno-exceptions -fPIC -std=gnu++0x
 XUL_VERSION      = $(shell echo '\#include "mozilla-config.h"'| \
                      $(CXX) $(XUL_CFLAGS) $(CXXFLAGS) -shared -x c++ -w -E -fdirectives-only - | \
                      sed -n -e 's/\#[[:space:]]*define[[:space:]]\+MOZILLA_VERSION[[:space:]]\+\"\(.*\)\"/\1/gp')
-XUL_VER_MIN      ?= $(XUL_VERSION)
+XUL_VER_MIN      ?= `echo $(XUL_VERSION) | sed -r -e 's/([^.]+\.[^.]+).*/\1/g'`
 XUL_VER_MAX      ?= `echo $(XUL_VERSION) | sed -rn -e 's/([^.]+).*/\1.*/gp'`
 # if auto-detect but xulrunner is not available, fall back to these values
 XUL_VER_MIN_     ?= 10.0.1
@@ -73,15 +73,15 @@ xpi/install.rdf: install.rdf Makefile
 	mkdir -p xpi
 	XUL_VER_MIN=$(XUL_VER_MIN); \
 	XUL_VER_MAX=$(XUL_VER_MAX); \
-	sed -e 's/$${PLATFORM}/'$(PLATFORM)'/g' \
-	    -e 's/$${VERSION}/'$(VERSION)'/g' \
-	    -e 's/$${XUL_VER_MIN}/'"$${XUL_VER_MIN:-$(XUL_VER_MIN_)}"'/g' \
-	    -e 's/$${XUL_VER_MAX}/'"$${XUL_VER_MAX:-$(XUL_VER_MAX_)}"'/g' \
+	sed -e 's	$${PLATFORM}	'$(PLATFORM)'	g' \
+	    -e 's	$${VERSION}	'$(VERSION)'	g' \
+	    -e 's	$${XUL_VER_MIN}	'"$${XUL_VER_MIN:-$(XUL_VER_MIN_)}"'	g' \
+	    -e 's	$${XUL_VER_MAX}	'"$${XUL_VER_MAX:-$(XUL_VER_MAX_)}"'	g' \
 	    $< > $@
 
 xpi/chrome.manifest: chrome.manifest Makefile
 	mkdir -p xpi
-	sed -e 's/$${PLATFORM}/'$(PLATFORM)'/g' \
+	sed -e 's	$${PLATFORM}	'$(PLATFORM)'	g' \
 	    $< > $@
 
 $(TARGET): GnomeKeyring.cpp GnomeKeyring.h Makefile
