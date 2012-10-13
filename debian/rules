@@ -8,5 +8,9 @@ include /usr/share/mozilla-devscripts/xpi.mk
 
 export VERSION=$(DEB_UPSTREAM_VERSION)
 
-MOZ_XPI_BUILD_COMMAND = make
-MOZ_XPI_CLEAN_COMMAND = make clean
+# Use this when #688438 is fixed, and get rid of Makefile.combined
+#MOZ_XPI_BUILD_COMMAND = make
+#MOZ_XPI_CLEAN_COMMAND = make clean
+
+MOZ_XPI_BUILD_COMMAND = make -f debian/Makefile.combined all
+MOZ_XPI_CLEAN_COMMAND = make -f debian/Makefile.combined clean-all
