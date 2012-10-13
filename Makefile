@@ -9,8 +9,9 @@ ARCHIVENAME      ?= $(FULLNAME)
 
 
 # xulrunner tools. use = not ?= so we don't execute on every invocation
-XUL_PKG_NAME     = $(shell (pkg-config --atleast-version=2 libxul && echo libxul) \
-                        || (pkg-config libxul2                    && echo libxul2))
+XUL_PKG_NAME     ?= $(shell (pkg-config --atleast-version=2 libxul && echo libxul) \
+                         || (pkg-config libxul2                    && echo libxul2))
+XUL_PKG_NAME     := $(XUL_PKG_NAME)
 
 # compilation flags
 
@@ -18,12 +19,13 @@ XUL_PKG_NAME     = $(shell (pkg-config --atleast-version=2 libxul && echo libxul
 ifneq ($(XUL_PKG_NAME),)
 XUL_CFLAGS       := `pkg-config --cflags $(XUL_PKG_NAME)`
 XUL_LDFLAGS      := `pkg-config --libs $(XUL_PKG_NAME)`
-XPCOM_ABI_FLAGS  += -Wl`pkg-config --libs-only-L $(XUL_PKG_NAME) | sed -e 's/-L\(\S*\).*/,-rpath=\1/'`
+XPCOM_ABI_FLAGS  += `pkg-config --libs-only-L $(XUL_PKG_NAME) | sed -e 's/-L\(\S*\).*/-Wl,-rpath=\1/' | sed -n -e 'p;s/^\(.*\)-devel\(.*\)\/lib$$/\1\2/gp'`
 endif
 
 GNOME_CFLAGS     := `pkg-config --cflags gnome-keyring-1`
 GNOME_LDFLAGS    := `pkg-config --libs gnome-keyring-1`
 CXXFLAGS         += -Wall -fno-rtti -fno-exceptions -fPIC -std=gnu++0x
+LDFLAGS          +=
 
 # determine xul version from "mozilla-config.h" include file
 XUL_VERSION      = $(shell echo '\#include "mozilla-config.h"'| \
@@ -41,7 +43,8 @@ XUL_VER_MAX_     ?= 10.*
 # support dynamically adjusting the dependency tree during its run
 PLATFORM         ?= unknown
 
-TARGET           := libgnomekeyring.so
+TARGET           ?= libgnomekeyring.so
+TARGET           := $(TARGET)
 XPI_TARGET       := $(FULLNAME).xpi
 BUILD_FILES      := \
 xpi/platform/$(PLATFORM)/components/$(TARGET) \
@@ -57,9 +60,9 @@ build: build-xpi
 build-xpi: xpcom_abi
 ifeq "$(PLATFORM)" "unknown"
 # set PLATFORM properly in a sub-make
-	$(MAKE) $(XPI_TARGET) PLATFORM=`./xpcom_abi || echo unknown`
+	$(MAKE) -f $(lastword $(MAKEFILE_LIST)) $(XPI_TARGET) PLATFORM=`./xpcom_abi || echo unknown`
 else
-	$(MAKE) $(XPI_TARGET)
+	$(MAKE) -f $(lastword $(MAKEFILE_LIST)) $(XPI_TARGET)
 endif
 
 $(XPI_TARGET): $(BUILD_FILES)
@@ -82,15 +85,16 @@ xpi/install.rdf: install.rdf Makefile
 xpi/chrome.manifest: chrome.manifest Makefile
 	mkdir -p xpi
 	sed -e 's	$${PLATFORM}	'$(PLATFORM)'	g' \
+	    -e 's	$${TARGET}	'$(TARGET)'	g' \
 	    $< > $@
 
 $(TARGET): GnomeKeyring.cpp GnomeKeyring.h Makefile
 	$(CXX) $< -o $@ -shared \
-	    $(XUL_CFLAGS) $(XUL_LDFLAGS) $(GNOME_CFLAGS) $(GNOME_LDFLAGS) $(CXXFLAGS)
+	    $(XUL_CFLAGS) $(XUL_LDFLAGS) $(GNOME_CFLAGS) $(GNOME_LDFLAGS) $(CXXFLAGS) $(LDFLAGS)
 	chmod +x $@
 
 xpcom_abi: xpcom_abi.cpp Makefile
-	$(CXX) $< -o $@ $(XUL_CFLAGS) $(XUL_LDFLAGS) $(XPCOM_ABI_FLAGS) $(CXXFLAGS)
+	$(CXX) $< -o $@ $(XUL_CFLAGS) $(XUL_LDFLAGS) $(XPCOM_ABI_FLAGS) $(CXXFLAGS) $(LDFLAGS)
 
 tarball:
 	git archive --format=tar \
