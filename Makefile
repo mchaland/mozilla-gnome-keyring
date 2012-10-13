@@ -27,6 +27,10 @@ GNOME_LDFLAGS    := `pkg-config --libs gnome-keyring-1`
 CXXFLAGS         += -Wall -fno-rtti -fno-exceptions -fPIC -std=gnu++0x
 LDFLAGS          +=
 
+# work around mozilla bug #763327
+NEED_HASHFUNC    = $(shell echo '\#include "mozilla/HashFunctions.h"'| \
+                     $(CXX) $(XUL_CFLAGS) $(CXXFLAGS) -shared -x c++ -w -fdirectives-only - \
+                     && echo true || echo false)
 # determine xul version from "mozilla-config.h" include file
 XUL_VERSION      = $(shell echo '\#include "mozilla-config.h"'| \
                      $(CXX) $(XUL_CFLAGS) $(CXXFLAGS) -shared -x c++ -w -E -fdirectives-only - | \
@@ -94,8 +98,12 @@ $(TARGET): GnomeKeyring.cpp GnomeKeyring.h Makefile
 	    $(XUL_CFLAGS) $(XUL_LDFLAGS) $(GNOME_CFLAGS) $(GNOME_LDFLAGS) $(CXXFLAGS) $(LDFLAGS)
 	chmod +x $@
 
-xpcom_abi: xpcom_abi.cpp Makefile
-	$(CXX) $< HashFunctions.cpp -o $@ $(XUL_CFLAGS) $(XUL_LDFLAGS) $(XPCOM_ABI_FLAGS) $(CXXFLAGS) $(LDFLAGS)
+xpcom_abi: xpcom_abi.cpp HashFunctions.cpp Makefile
+ifeq "$(NEED_HASHFUNC)" "true"
+	$(CXX) $< -o $@ $(XUL_CFLAGS) $(XUL_LDFLAGS) $(XPCOM_ABI_FLAGS) $(CXXFLAGS) $(LDFLAGS) $(word 2,$^)
+else
+	$(CXX) $< -o $@ $(XUL_CFLAGS) $(XUL_LDFLAGS) $(XPCOM_ABI_FLAGS) $(CXXFLAGS) $(LDFLAGS)
+endif
 
 tarball:
 	git archive --format=tar \
