@@ -40,7 +40,7 @@ link-xulrunner:
 
 link-icedove:
 	mkdir -p "$@" && $(MAKE) -C "$@" -f ../Makefile VPATH=.. \
-	  XUL_PKG_NAME=icedove LDFLAGS=-lmozalloc \
+	  XUL_PKG_NAME=icedove LDFLAGS="$(LDFLAGS) -lmozalloc" \
 	  TARGET=libgnomekeyring-icedove.so XPI_TARGET=$(XPI_DEFAULT)
 
 clean-all:
