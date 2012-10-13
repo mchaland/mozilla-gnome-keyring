@@ -60,7 +60,8 @@ build: build-xpi
 build-xpi: xpcom_abi
 ifeq "$(PLATFORM)" "unknown"
 # set PLATFORM properly in a sub-make
-	$(MAKE) -f $(lastword $(MAKEFILE_LIST)) $(XPI_TARGET) PLATFORM=`./xpcom_abi || echo unknown`
+	PLATFORM=$$(./xpcom_abi) && \
+	$(MAKE) -f $(lastword $(MAKEFILE_LIST)) $(XPI_TARGET) PLATFORM=$${PLATFORM}
 else
 	$(MAKE) -f $(lastword $(MAKEFILE_LIST)) $(XPI_TARGET)
 endif
