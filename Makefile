@@ -29,7 +29,7 @@ LDFLAGS          +=
 
 # work around mozilla bug #763327
 NEED_HASHFUNC    = $(shell echo '\#include "mozilla/HashFunctions.h"'| \
-                     $(CXX) $(XUL_CFLAGS) $(CXXFLAGS) -shared -x c++ -w -fdirectives-only - \
+                     $(CXX) $(XUL_CFLAGS) $(CXXFLAGS) -o /dev/null -shared -x c++ -w -fdirectives-only - \
                      && echo true || echo false)
 # determine xul version from "mozilla-config.h" include file
 XUL_VERSION      = $(shell echo '\#include "mozilla-config.h"'| \
