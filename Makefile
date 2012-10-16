@@ -53,7 +53,8 @@ XPI_TARGET       := $(FULLNAME).xpi
 BUILD_FILES      := \
 xpi/platform/$(PLATFORM)/components/$(TARGET) \
 xpi/install.rdf \
-xpi/chrome.manifest
+xpi/chrome.manifest \
+xpi/defaults/preferences/gnome-keyring.js
 
 
 .PHONY: all build build-xpi tarball
@@ -92,6 +93,10 @@ xpi/chrome.manifest: chrome.manifest Makefile
 	sed -e 's	$${PLATFORM}	'$(PLATFORM)'	g' \
 	    -e 's	$${TARGET}	'$(TARGET)'	g' \
 	    $< > $@
+
+xpi/defaults/preferences/gnome-keyring.js: gnome-keyring.js
+	mkdir -p xpi/defaults/preferences
+	cp -a $< $@
 
 $(TARGET): GnomeKeyring.cpp GnomeKeyring.h Makefile
 	$(CXX) $< -o $@ -shared \
