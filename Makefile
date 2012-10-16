@@ -54,7 +54,8 @@ BUILD_FILES      := \
 xpi/platform/$(PLATFORM)/components/$(TARGET) \
 xpi/install.rdf \
 xpi/chrome.manifest \
-xpi/defaults/preferences/gnome-keyring.js
+xpi/defaults/preferences/gnome-keyring.js \
+xpi/chrome/skin/hicolor/seahorse.svg
 
 
 .PHONY: all build build-xpi tarball
@@ -96,6 +97,10 @@ xpi/chrome.manifest: chrome.manifest Makefile
 
 xpi/defaults/preferences/gnome-keyring.js: gnome-keyring.js
 	mkdir -p xpi/defaults/preferences
+	cp -a $< $@
+
+xpi/chrome/skin/hicolor/seahorse.svg: seahorse.svg
+	mkdir -p xpi/chrome/skin/hicolor
 	cp -a $< $@
 
 $(TARGET): GnomeKeyring.cpp GnomeKeyring.h Makefile
