@@ -1,0 +1,10 @@
+# general debian excludes
+/files
+/*.log
+/*.substvars
+
+# package-specific excludes
+/link-*
+/xpi-*
+/xpi
+/xul-ext-gnome-keyring

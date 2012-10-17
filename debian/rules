@@ -15,5 +15,5 @@ export VERSION=$(DEB_UPSTREAM_VERSION)
 #MOZ_XPI_BUILD_COMMAND = make
 #MOZ_XPI_CLEAN_COMMAND = make clean
 
-MOZ_XPI_BUILD_COMMAND = make -f debian/Makefile.combined all
-MOZ_XPI_CLEAN_COMMAND = make -f debian/Makefile.combined clean-all
+MOZ_XPI_BUILD_COMMAND = make -C debian -f Makefile.combined all
+MOZ_XPI_CLEAN_COMMAND = make -C debian -f Makefile.combined clean-all

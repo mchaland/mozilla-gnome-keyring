@@ -2,7 +2,7 @@ PACKAGE          ?= mozilla-gnome-keyring
 FULLNAME         ?= $(PACKAGE)-$(VERSION)
 
 XPI_DEFAULT = target.xpi
-XPI_TARGET = $(FULLNAME).xpi
+XPI_TARGET = ../$(FULLNAME).xpi
 
 ALLTMPDIR = link-xulrunner xpi-xulrunner link-icedove xpi-icedove xpi
 SEDADDR = \|Thunderbird|,\|</em:targetApplication>|
@@ -37,13 +37,14 @@ xpi-icedove: link-icedove
 	unzip -o -d "$@" $</$(XPI_DEFAULT)
 
 link-xulrunner:
-	mkdir -p "$@" && $(MAKE) -C "$@" -f ../Makefile VPATH=.. \
+	mkdir -p "$@" && $(MAKE) -C "$@" -f ../../Makefile VPATH=../.. \
 	  XPI_TARGET=$(XPI_DEFAULT)
 
 link-icedove:
-	mkdir -p "$@" && $(MAKE) -C "$@" -f ../Makefile VPATH=.. \
+	mkdir -p "$@" && $(MAKE) -C "$@" -f ../../Makefile VPATH=../.. \
 	  XUL_PKG_NAME=icedove LDFLAGS="$(LDFLAGS) -lmozalloc" \
 	  TARGET=libgnomekeyring-icedove.so XPI_TARGET=$(XPI_DEFAULT)
 
 clean-all:
 	rm -rf $(ALLTMPDIR)
+	rm -f $(XPI_TARGET)
