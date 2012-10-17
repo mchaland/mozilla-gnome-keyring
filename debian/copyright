@@ -9,6 +9,11 @@ Copyright: 2007 Sylvain Pasche <sylvain.pasche@gmail.com>
 License: MPL-1.1 or GPL-2+ or LGPL-2.1+
 Comment: see upstream AUTHORS file for a full list
 
+Files: seahorse.svg
+Copyright: 2008 GNOME seahorse developers
+           2012 gento90 <https://github.com/gentoo90>
+License: GPL-2+
+
 Files: debian/*
 Copyright: 2011 Ximin Luo <infinity0@gmx.com>
 License: MPL-1.1 or GPL-2+ or LGPL-2.1+
