@@ -18,8 +18,9 @@ $(XPI_TARGET): xpi
 
 xpi: xpi-xulrunner xpi-icedove
 	mkdir -p $@
-	cp -a xpi-xulrunner/platform $@
-	cp -a xpi-icedove/platform $@
+	for i in xpi-xulrunner xpi-icedove; do \
+	  cp -a $$i/platform $$i/chrome $$i/defaults -t $@; \
+	done
 	T=$$(tempfile) && \
 	  sed -n -e "$(SEDADDR)"'p' xpi-icedove/install.rdf > "$$T" && \
 	  printf "$(SEDADDR)"'{\nR'"$$T"'\nd;}' | sed -f - xpi-xulrunner/install.rdf \
@@ -27,6 +28,7 @@ xpi: xpi-xulrunner xpi-icedove
 	cat /dev/null > xpi/chrome.manifest
 	sed -e 's/ABI=/application={ec8030f7-c20a-464f-9b0e-13a3a9e97384} ABI=/' xpi-xulrunner/chrome.manifest >> xpi/chrome.manifest
 	sed -e 's/ABI=/application={3550f703-e582-4d05-9a08-453d09bdfdc6} ABI=/' xpi-icedove/chrome.manifest >> xpi/chrome.manifest
+	sort -ur -o xpi/chrome.manifest xpi/chrome.manifest
 
 xpi-xulrunner: link-xulrunner
 	unzip -o -d "$@" $</$(XPI_DEFAULT)
