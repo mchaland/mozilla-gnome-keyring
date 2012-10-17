@@ -3,7 +3,7 @@ Section: web
 Priority: optional
 Maintainer: Ximin Luo <infinity0@gmx.com>
 Build-Depends: cdbs, debhelper (>= 7), dpkg-dev (>= 1.16.1), mozilla-devscripts (>= 0.29), xulrunner-dev (>= 10.0), icedove-dev (>= 10.0), libgnome-keyring-dev
-Standards-Version: 3.9.2
+Standards-Version: 3.9.3
 Homepage: https://github.com/infinity0/mozilla-gnome-keyring
 Vcs-Git: git://github.com/infinity0/mozilla-gnome-keyring.git -b debian
 Vcs-Browser: https://github.com/infinity0/mozilla-gnome-keyring/tree/debian
