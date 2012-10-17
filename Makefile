@@ -27,6 +27,10 @@ GNOME_LDFLAGS    := `pkg-config --libs gnome-keyring-1`
 CXXFLAGS         += -Wall -fno-rtti -fno-exceptions -fPIC -std=gnu++0x
 LDFLAGS          +=
 
+# work around mozilla bug #763327
+NEED_HASHFUNC    = $(shell echo '\#include "mozilla/HashFunctions.h"'| \
+                     $(CXX) $(XUL_CFLAGS) $(CXXFLAGS) -o /dev/null -shared -x c++ -w -fdirectives-only - \
+                     && echo true || echo false)
 # determine xul version from "mozilla-config.h" include file
 XUL_VERSION      = $(shell echo '\#include "mozilla-config.h"'| \
                      $(CXX) $(XUL_CFLAGS) $(CXXFLAGS) -shared -x c++ -w -E -fdirectives-only - | \
@@ -49,7 +53,9 @@ XPI_TARGET       := $(FULLNAME).xpi
 BUILD_FILES      := \
 xpi/platform/$(PLATFORM)/components/$(TARGET) \
 xpi/install.rdf \
-xpi/chrome.manifest
+xpi/chrome.manifest \
+xpi/defaults/preferences/gnome-keyring.js \
+xpi/chrome/skin/hicolor/seahorse.svg
 
 
 .PHONY: all build build-xpi tarball
@@ -60,7 +66,8 @@ build: build-xpi
 build-xpi: xpcom_abi
 ifeq "$(PLATFORM)" "unknown"
 # set PLATFORM properly in a sub-make
-	$(MAKE) -f $(lastword $(MAKEFILE_LIST)) $(XPI_TARGET) PLATFORM=`./xpcom_abi || echo unknown`
+	PLATFORM=$$(./xpcom_abi) && \
+	$(MAKE) -f $(lastword $(MAKEFILE_LIST)) $(XPI_TARGET) PLATFORM=$${PLATFORM}
 else
 	$(MAKE) -f $(lastword $(MAKEFILE_LIST)) $(XPI_TARGET)
 endif
@@ -88,13 +95,25 @@ xpi/chrome.manifest: chrome.manifest Makefile
 	    -e 's	$${TARGET}	'$(TARGET)'	g' \
 	    $< > $@
 
+xpi/defaults/preferences/gnome-keyring.js: gnome-keyring.js
+	mkdir -p xpi/defaults/preferences
+	cp -a $< $@
+
+xpi/chrome/skin/hicolor/seahorse.svg: seahorse.svg
+	mkdir -p xpi/chrome/skin/hicolor
+	cp -a $< $@
+
 $(TARGET): GnomeKeyring.cpp GnomeKeyring.h Makefile
 	$(CXX) $< -o $@ -shared \
 	    $(XUL_CFLAGS) $(XUL_LDFLAGS) $(GNOME_CFLAGS) $(GNOME_LDFLAGS) $(CXXFLAGS) $(LDFLAGS)
 	chmod +x $@
 
-xpcom_abi: xpcom_abi.cpp Makefile
+xpcom_abi: xpcom_abi.cpp HashFunctions.cpp Makefile
+ifeq "$(NEED_HASHFUNC)" "true"
+	$(CXX) $< -o $@ $(XUL_CFLAGS) $(XUL_LDFLAGS) $(XPCOM_ABI_FLAGS) $(CXXFLAGS) $(LDFLAGS) $(word 2,$^)
+else
 	$(CXX) $< -o $@ $(XUL_CFLAGS) $(XUL_LDFLAGS) $(XPCOM_ABI_FLAGS) $(CXXFLAGS) $(LDFLAGS)
+endif
 
 tarball:
 	git archive --format=tar \
