@@ -3,6 +3,8 @@ mozilla-gnome-keyring (0.6.4-0) UNRELEASED; urgency=low
   * Fix FTBFS where the platform name contains a /. (Closes: #689189)
   * Fix Vcs-* entries in debian/contol to point to the correct branch.
     (Closes: #689165)
+  * Build separate libraries against both xulrunner-dev and
+    icedove-dev. (Closes: #690324)
 
  -- Ximin Luo <infinity0@gmx.com>  Mon, 08 Oct 2012 09:27:12 +0100
 
