@@ -139,7 +139,7 @@ static const char *kDisabledHostAttrName = "disabledHost";
 template<class T, void F(T *)>
 class AutoPtr {
   public:
-    AutoPtr() : mPtr(nsnull) { }
+    AutoPtr() : mPtr(nullptr) { }
 
     operator T*() {
       return mPtr;
@@ -449,7 +449,7 @@ foundToLoginInfo(GnomeKeyringFound* found)
 {
   nsCOMPtr<nsILoginInfo> loginInfo = do_CreateInstance(NS_LOGININFO_CONTRACTID);
   if (!loginInfo)
-    return nsnull;
+    return nullptr;
 
   loginInfo->SetPassword(NS_ConvertUTF8toUTF16(found->secret));
 
@@ -587,7 +587,7 @@ NS_IMETHODIMP GnomeKeyring::Init()
                                         getter_AddRefs(prefService));
   if (ret != NS_OK) { return ret; }
 
-  ret = prefService->ReadUserPrefs(nsnull);
+  ret = prefService->ReadUserPrefs(nullptr);
   if (ret != NS_OK) { return ret; }
 
   ret = prefService->GetBranch(kPrefsBranch, getter_AddRefs(pref));
@@ -601,7 +601,7 @@ NS_IMETHODIMP GnomeKeyring::Init()
     char* tempKeyringName;
     pref->GetCharPref(kPrefsKeyring, &tempKeyringName);
     keyringName = tempKeyringName;
-    if ( keyringName.IsVoid() ) keyringName.AssignLiteral(kDefaultKeyring);
+    if ( keyringName.IsVoid() || keyringName.IsEmpty() ) keyringName.AssignLiteral(kDefaultKeyring);
   }
 
   /* Create the password keyring, it doesn't hurt if it already exists */
