@@ -1,3 +1,10 @@
+mozilla-gnome-keyring (0.6.6-2) UNRELEASED; urgency=low
+
+  * Rebuild for iceweasel 17 and icedove 17.
+  * Update to latest Standards-Version.
+
+ -- Ximin Luo <infinity0@gmx.com>  Mon, 31 Dec 2012 14:41:02 +0000
+
 mozilla-gnome-keyring (0.6.6-1) unstable; urgency=low
 
   * Fix FTBFS where the platform name contains a /. (Closes: #689189)
