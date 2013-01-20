@@ -1,9 +1,9 @@
-mozilla-gnome-keyring (0.6.7-1) UNRELEASED; urgency=low
+mozilla-gnome-keyring (0.6.7-1) experimental; urgency=low
 
   * New upstream release.
   * Rebuild for iceweasel 18 and icedove 17.
 
- -- Ximin Luo <infinity0@gmx.com>  Sun, 20 Jan 2013 22:06:34 +0000
+ -- Ximin Luo <infinity0@gmx.com>  Sun, 20 Jan 2013 22:18:45 +0000
 
 mozilla-gnome-keyring (0.6.6-2) experimental; urgency=low
 
