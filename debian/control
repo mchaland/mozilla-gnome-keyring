@@ -8,7 +8,7 @@ Build-Depends: cdbs,
                icedove-dev (>= 17.0),
                libgnome-keyring-dev,
                mozilla-devscripts (>= 0.29),
-               xulrunner-dev (>= 18.0)
+               xulrunner-dev (>= 19.0)
 Standards-Version: 3.9.4
 Homepage: https://github.com/infinity0/mozilla-gnome-keyring
 Vcs-Git: git://github.com/infinity0/mozilla-gnome-keyring.git -b debian
