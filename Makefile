@@ -19,7 +19,7 @@ XUL_PKG_NAME     := $(XUL_PKG_NAME)
 ifneq ($(XUL_PKG_NAME),)
 XUL_CFLAGS       := `pkg-config --cflags $(XUL_PKG_NAME)`
 XUL_LDFLAGS      := `pkg-config --libs $(XUL_PKG_NAME)`
-XPCOM_ABI_FLAGS  += `pkg-config --libs-only-L $(XUL_PKG_NAME) | sed -e 's/-L\(\S*\).*/-Wl,-rpath=\1/' | sed -n -e 'p;s/^\(.*\)-devel\(.*\)\/lib$$/\1\2/gp'` -Wl,-whole-archive -lmozglue -Wl,-no-whole-archive
+XPCOM_ABI_FLAGS  += `pkg-config --libs-only-L $(XUL_PKG_NAME) | sed -e 's/-L\(\S*\).*/-Wl,-rpath=\1/' | sed -n -e 'p;s/^\(.*\)-devel\(.*\)\/lib$$/\1\2/gp'`
 endif
 
 GNOME_CFLAGS     := `pkg-config --cflags gnome-keyring-1`
@@ -105,7 +105,9 @@ $(TARGET): GnomeKeyring.cpp GnomeKeyring.h Makefile
 	chmod +x $@
 
 xpcom_abi: xpcom_abi.cpp Makefile
-	$(CXX) $< -o $@ $(XUL_CFLAGS) $(XUL_LDFLAGS) $(XPCOM_ABI_FLAGS) $(CXXFLAGS) $(LDFLAGS)
+	$(CXX) $< -o $@ $(XUL_CFLAGS) $(XUL_LDFLAGS) $(XPCOM_ABI_FLAGS) $(CXXFLAGS) $(LDFLAGS) \
+	  $$( $(CXX) $(XUL_CFLAGS) $(XUL_LDFLAGS) $(XPCOM_ABI_FLAGS) $(CXXFLAGS) $(LDFLAGS) -lmozglue -shared -o /dev/null \
+	      && echo "-Wl,-whole-archive -lmozglue -Wl,-no-whole-archive" )  # only add these flags if -lmozglue exists
 
 tarball:
 	git archive --format=tar \
