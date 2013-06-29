@@ -873,6 +873,7 @@ NS_IMETHODIMP GnomeKeyring::GetUiBusy(bool *aUiBusy)
   return NS_OK;
 }
 
+#if HAVE_NSILMS_GETISLOGGEDIN
 /**
  * True when the master password has already been entered.
  */
@@ -882,6 +883,7 @@ NS_IMETHODIMP GnomeKeyring::GetIsLoggedIn(bool *aIsLoggedIn)
   *aIsLoggedIn = TRUE;
   return NS_OK;
 }
+#endif
 
 
 

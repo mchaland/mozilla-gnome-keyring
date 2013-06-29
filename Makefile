@@ -100,7 +100,10 @@ xpi/chrome/skin/hicolor/seahorse.svg: seahorse.svg
 	cp -a $< $@
 
 $(TARGET): GnomeKeyring.cpp GnomeKeyring.h Makefile
-	$(CXX) $< -o $@ -shared \
+	HAVE_NSILMS_GETISLOGGEDIN=$$({ echo '#include "GnomeKeyring.h"'; echo 'NS_IMETHODIMP GnomeKeyring::GetIsLoggedIn(bool *aIsLoggedIn) { return NS_OK; }'; } | \
+	  $(CXX) $(XUL_CFLAGS) $(GNOME_CFLAGS) $(CXXFLAGS) -x c++ -w -c -o /dev/null - \
+	  && echo 1 || echo 0); \
+	$(CXX) $< -o $@ -shared -DHAVE_NSILMS_GETISLOGGEDIN=$$HAVE_NSILMS_GETISLOGGEDIN \
 	    $(XUL_CFLAGS) $(XUL_LDFLAGS) $(GNOME_CFLAGS) $(GNOME_LDFLAGS) $(CXXFLAGS) $(LDFLAGS)
 	chmod +x $@
 
