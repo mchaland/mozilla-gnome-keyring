@@ -1,3 +1,9 @@
+mozilla-gnome-keyring (0.6.6-3) unstable; urgency=low
+
+  * Upload to unstable.
+
+ -- Ximin Luo <infinity0@gmx.com>  Sun, 30 Jun 2013 16:23:33 +0100
+
 mozilla-gnome-keyring (0.6.6-2) experimental; urgency=low
 
   * Rebuild for iceweasel 17 and icedove 17.
