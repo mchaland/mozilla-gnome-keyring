@@ -8,7 +8,7 @@ FULLNAME         ?= $(PACKAGE)-$(VERSION)
 ARCHIVENAME      ?= $(FULLNAME)
 
 
-# xulrunner tools. use = not ?= so we don't execute on every invocation
+# xulrunner tools. use := so we don't execute on every use of the variable
 XUL_PKG_NAME     ?= $(shell (pkg-config --atleast-version=2 libxul && echo libxul) \
                          || (pkg-config libxul2                    && echo libxul2))
 XUL_PKG_NAME     := $(XUL_PKG_NAME)
@@ -19,7 +19,7 @@ XUL_PKG_NAME     := $(XUL_PKG_NAME)
 ifneq ($(XUL_PKG_NAME),)
 XUL_CFLAGS       := `pkg-config --cflags $(XUL_PKG_NAME)`
 XUL_LDFLAGS      := `pkg-config --libs $(XUL_PKG_NAME)`
-XPCOM_ABI_FLAGS  += `pkg-config --libs-only-L $(XUL_PKG_NAME) | sed -e 's/-L\(\S*\).*/-Wl,-rpath=\1/' | sed -n -e 'p;s/^\(.*\)-devel\(.*\)\/lib$$/\1\2/gp'`
+XPCOM_ABI_FLAGS  := `pkg-config --libs-only-L $(XUL_PKG_NAME) | sed -e 's/-L\(\S*\).*/-Wl,-rpath=\1/' | sed -n -e 'p;s/^\(.*\)-devel\(.*\)\/lib$$/\1\2/gp'`
 endif
 
 GNOME_CFLAGS     := `pkg-config --cflags gnome-keyring-1`
@@ -27,16 +27,9 @@ GNOME_LDFLAGS    := `pkg-config --libs gnome-keyring-1`
 CXXFLAGS         += -Wall -fno-rtti -fno-exceptions -fPIC -std=gnu++0x -D__STDC_LIMIT_MACROS
 LDFLAGS          +=
 
-# determine xul version from "mozilla-config.h" include file
-XUL_VERSION      = $(shell echo '\#include "mozilla-config.h"'| \
-                     $(CXX) $(XUL_CFLAGS) $(CXXFLAGS) -shared -x c++ -w -E -fdirectives-only - | \
-                     sed -n -e 's/\#[[:space:]]*define[[:space:]]\+MOZILLA_VERSION[[:space:]]\+\"\(.*\)\"/\1/gp')
-XUL_VER_MIN      ?= `echo $(XUL_VERSION) | sed -r -e 's/([^.]+\.[^.]+).*/\1/g'`
-XUL_VER_MAX      ?= `echo $(XUL_VERSION) | sed -rn -e 's/([^.]+).*/\1.*/gp'`
-# if auto-detect but xulrunner is not available, fall back to these values
+# if auto-detection fails, fall back to these values
 XUL_VER_MIN_     ?= 10.0.1
 XUL_VER_MAX_     ?= 10.*
-
 
 # platform-specific handling
 # lazy variables, instantiated properly in a sub-make since make doesn't
@@ -59,14 +52,18 @@ all: build
 
 build: build-xpi
 
-build-xpi: xpcom_abi
-ifeq "$(PLATFORM)" "unknown"
-# set PLATFORM properly in a sub-make
-	PLATFORM=$$(./xpcom_abi) && \
-	$(MAKE) -f $(lastword $(MAKEFILE_LIST)) $(XPI_TARGET) PLATFORM=$${PLATFORM}
+build-xpi: config.vars
+ifndef HAVE_CONFIG_VARS
+# set build-environment variables properly in a sub-make
+	. ./$<; \
+	$(MAKE) -f $(lastword $(MAKEFILE_LIST)) $(XPI_TARGET)
 else
 	$(MAKE) -f $(lastword $(MAKEFILE_LIST)) $(XPI_TARGET)
 endif
+
+SHELL_EXPORT := $(foreach v,CXX XUL_CFLAGS XUL_LDFLAGS XPCOM_ABI_FLAGS GNOME_CFLAGS GNOME_LDFLAGS CXXFLAGS LDFLAGS,$(v)="$($(v))")
+config.vars: config.sh GnomeKeyring.h xpcom_abi.cpp Makefile
+	$(SHELL_EXPORT) sh $^ > $@
 
 $(XPI_TARGET): $(BUILD_FILES)
 	cd xpi && zip -rq ../$@ *
@@ -99,18 +96,10 @@ xpi/chrome/skin/hicolor/seahorse.svg: seahorse.svg
 	mkdir -p xpi/chrome/skin/hicolor
 	cp -a $< $@
 
-$(TARGET): GnomeKeyring.cpp GnomeKeyring.h Makefile
-	HAVE_NSILMS_GETISLOGGEDIN=$$({ echo '#include "GnomeKeyring.h"'; echo 'NS_IMETHODIMP GnomeKeyring::GetIsLoggedIn(bool *aIsLoggedIn) { return NS_OK; }'; } | \
-	  $(CXX) $(XUL_CFLAGS) $(GNOME_CFLAGS) $(CXXFLAGS) -x c++ -w -c -o /dev/null - \
-	  && echo 1 || echo 0); \
-	$(CXX) $< -o $@ -shared -DHAVE_NSILMS_GETISLOGGEDIN=$$HAVE_NSILMS_GETISLOGGEDIN \
+$(TARGET): GnomeKeyring.cpp GnomeKeyring.h
+	$(CXX) $< -o $@ -shared -DHAVE_NSILMS_GETISLOGGEDIN=$(HAVE_NSILMS_GETISLOGGEDIN) \
 	    $(XUL_CFLAGS) $(XUL_LDFLAGS) $(GNOME_CFLAGS) $(GNOME_LDFLAGS) $(CXXFLAGS) $(LDFLAGS)
 	chmod +x $@
-
-xpcom_abi: xpcom_abi.cpp Makefile
-	$(CXX) $< -o $@ $(XUL_CFLAGS) $(XUL_LDFLAGS) $(XPCOM_ABI_FLAGS) $(CXXFLAGS) $(LDFLAGS) \
-	  $$( $(CXX) $(XUL_CFLAGS) $(XUL_LDFLAGS) $(XPCOM_ABI_FLAGS) $(CXXFLAGS) $(LDFLAGS) -lmozglue -shared -o /dev/null \
-	      && echo "-Wl,-whole-archive -lmozglue -Wl,-no-whole-archive" )  # only add these flags if -lmozglue exists
 
 tarball:
 	git archive --format=tar \
@@ -121,9 +110,9 @@ tarball:
 clean:
 	rm -f $(TARGET)
 	rm -f $(XPI_TARGET)
-	rm -f xpcom_abi
 	rm -f -r xpi
 
 clean-all: clean
 	rm -f *.xpi
 	rm -f *.tar.gz
+	rm -f config.vars xpcom_abi
