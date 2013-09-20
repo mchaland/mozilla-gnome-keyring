@@ -1,8 +1,8 @@
-mozilla-gnome-keyring (0.6.9-3) UNRELEASED; urgency=low
+mozilla-gnome-keyring (0.6.9-3) unstable; urgency=low
 
   * Rebuild for iceweasel 24 and icedove 17.
 
- -- Ximin Luo <infinity0@gmx.com>  Fri, 20 Sep 2013 12:46:23 +0100
+ -- Ximin Luo <infinity0@gmx.com>  Fri, 20 Sep 2013 12:46:44 +0100
 
 mozilla-gnome-keyring (0.6.9-2) unstable; urgency=low
 
