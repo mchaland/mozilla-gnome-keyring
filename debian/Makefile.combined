@@ -48,3 +48,4 @@ link-icedove:
 clean-all:
 	rm -rf $(ALLTMPDIR)
 	rm -f $(XPI_TARGET)
+	cd .. && $(MAKE) -f Makefile clean-all
