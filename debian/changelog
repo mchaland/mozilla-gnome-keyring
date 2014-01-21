@@ -1,3 +1,9 @@
+mozilla-gnome-keyring (0.6.9-6) UNRELEASED; urgency=low
+
+  * Rebuild for iceweasel 24.2 and icedove 24.2.
+
+ -- Ximin Luo <infinity0@gmx.com>  Tue, 21 Jan 2014 16:35:11 +0000
+
 mozilla-gnome-keyring (0.6.9-5) unstable; urgency=low
 
   * Rebuild for iceweasel 24.2 and icedove 17.
