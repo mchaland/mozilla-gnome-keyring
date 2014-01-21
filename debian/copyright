@@ -1,6 +1,6 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: mozilla-gnome-keyring
-Upstream-Contact: Ximin Luo <infinity0@gmx.com>
+Upstream-Contact: Ximin Luo <infinity0@pwned.gg>
 Source: https://github.com/infinity0/mozilla-gnome-keyring
 
 Files: *
@@ -15,7 +15,7 @@ Copyright: 2008 GNOME seahorse developers
 License: GPL-2+
 
 Files: debian/*
-Copyright: 2011 Ximin Luo <infinity0@gmx.com>
+Copyright: 2011 Ximin Luo <infinity0@pwned.gg>
 License: MPL-1.1 or GPL-2+ or LGPL-2.1+
 
 License: MPL-1.1
