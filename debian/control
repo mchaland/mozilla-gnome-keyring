@@ -9,7 +9,7 @@ Build-Depends: cdbs,
                libgnome-keyring-dev,
                mozilla-devscripts (>= 0.29),
                xulrunner-dev (>= 24.2)
-Standards-Version: 3.9.4
+Standards-Version: 3.9.5
 Homepage: https://github.com/infinity0/mozilla-gnome-keyring
 Vcs-Git: git://github.com/infinity0/mozilla-gnome-keyring.git -b debian
 Vcs-Browser: https://github.com/infinity0/mozilla-gnome-keyring/tree/debian
@@ -23,6 +23,11 @@ Provides: ${xpi:Provides}
 Enhances: ${xpi:Enhances}
 Breaks: ${xpi:Breaks}
 Conflicts: iceape (<< 2.0), iceweasel (<< 3.0)
-Description: Store mozilla passwords in GNOME Keyring.
- This extenion integrates gnome-keyring into xulrunner applications as the
+Description: Store mozilla passwords in GNOME Keyring
+ This extension integrates gnome-keyring into xulrunner applications as the
  software security device.
+ .
+ This replaces the default password manager in Firefox and Thunderbird
+ with an implementation which uses GNOME Keyring. This is a centralised
+ system-based password manager, which is more simple to handle than
+ per-application management.
