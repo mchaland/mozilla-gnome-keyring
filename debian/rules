@@ -1,7 +1,10 @@
 #!/usr/bin/make -f
 
 # clean build from git (including .orig.tar.gz if non-existent):
-# $ git-buildpackage --git-upstream-branch=master --git-debian-branch=debian --git-upstream-tree=branch
+gbp:
+	gbp buildpackage --git-upstream-branch=master --git-upstream-tree=branch --git-debian-branch=debian \
+	  --git-pbuilder '-I.*' '-i.git\|.cproject\|.project\|.settings'
+.PHONY: gbp
 
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
