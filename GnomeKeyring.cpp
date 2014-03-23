@@ -37,6 +37,10 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+#if HAVE_MOZ_BUG_956507
+#include "mozilla/Char16.h"
+#endif
+
 #include "GnomeKeyring.h"
 #include "nsMemory.h"
 #include "nsILoginInfo.h"
@@ -614,8 +618,12 @@ NS_IMETHODIMP GnomeKeyring::Init()
   return ret;
 }
 
+#if HAVE_NSILMS_INITWITHFILE_2
 NS_IMETHODIMP GnomeKeyring::InitWithFile(nsIFile *aInputFile,
                                          nsIFile *aOutputFile)
+#else
+NS_IMETHODIMP GnomeKeyring::InitWithFile(nsIFile *aInputFile)
+#endif
 {
   // TODO
   return Init();
