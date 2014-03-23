@@ -1,5 +1,5 @@
 PACKAGE          ?= mozilla-gnome-keyring
-VERSION          ?= $(shell git describe --tags 2>/dev/null || date +dev-%s)
+VERSION          ?= $(shell git describe --tags --match '[0-9]*' 2>/dev/null || date +dev-%s)
 # if these are empty, we will attempt to auto-detect correct values
 #XUL_VER_MIN      ?=
 #XUL_VER_MAX      ?=
