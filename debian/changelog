@@ -1,10 +1,10 @@
-mozilla-gnome-keyring (0.6.10-1experimental1) UNRELEASED; urgency=medium
+mozilla-gnome-keyring (0.6.10-1experimental1) experimental; urgency=medium
 
   * New upstream release.
   * Support iceweasel 27+.
   * Build for iceweasel 28 and icedove 24.2.
 
- -- Ximin Luo <infinity0@pwned.gg>  Sun, 30 Mar 2014 16:19:11 +0100
+ -- Ximin Luo <infinity0@pwned.gg>  Sun, 30 Mar 2014 17:07:52 +0100
 
 mozilla-gnome-keyring (0.6.9-6) unstable; urgency=low
 
