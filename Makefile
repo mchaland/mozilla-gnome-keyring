@@ -1,5 +1,5 @@
 PACKAGE          ?= mozilla-gnome-keyring
-VERSION          ?= $(shell git describe --tags 2>/dev/null || date +dev-%s)
+VERSION          ?= $(shell git describe --tags --match '[0-9]*' 2>/dev/null || date +dev-%s)
 # if these are empty, we will attempt to auto-detect correct values
 #XUL_VER_MIN      ?=
 #XUL_VER_MAX      ?=
@@ -62,6 +62,8 @@ else
 endif
 
 SHELL_EXPORT := $(foreach v,CXX XUL_CFLAGS XUL_LDFLAGS XPCOM_ABI_FLAGS GNOME_CFLAGS GNOME_LDFLAGS CXXFLAGS LDFLAGS,$(v)="$($(v))")
+CXX_MACRO_EXPORT := $(foreach v,HAVE_NSILMS_GETISLOGGEDIN HAVE_NSILMS_INITWITHFILE_2 HAVE_MOZ_BUG_956507 HAVE_MOZGLUE,-D$(v)="$($(v))")
+
 config.vars: config.sh GnomeKeyring.h xpcom_abi.cpp Makefile
 	$(SHELL_EXPORT) sh $^ > $@
 
@@ -97,7 +99,7 @@ xpi/chrome/skin/hicolor/seahorse.svg: seahorse.svg
 	cp -a $< $@
 
 $(TARGET): GnomeKeyring.cpp GnomeKeyring.h
-	$(CXX) $< -o $@ -shared -DHAVE_NSILMS_GETISLOGGEDIN=$(HAVE_NSILMS_GETISLOGGEDIN) \
+	$(CXX) $< -o $@ -shared $(CXX_MACRO_EXPORT) \
 	    $(XUL_CFLAGS) $(XUL_LDFLAGS) $(GNOME_CFLAGS) $(GNOME_LDFLAGS) $(CXXFLAGS) $(LDFLAGS)
 	chmod +x $@
 
