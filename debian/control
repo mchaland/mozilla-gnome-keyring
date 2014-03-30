@@ -22,7 +22,6 @@ Recommends: ${xpi:Recommends}
 Provides: ${xpi:Provides}
 Enhances: ${xpi:Enhances}
 Breaks: ${xpi:Breaks}
-Conflicts: iceape (<< 2.0), iceweasel (<< 3.0)
 Description: Store mozilla passwords in GNOME Keyring
  This extension integrates gnome-keyring into xulrunner applications as the
  software security device.
