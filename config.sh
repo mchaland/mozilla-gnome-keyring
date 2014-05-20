@@ -13,6 +13,12 @@ XUL_VERSION=$(echo '#include "mozilla-config.h"'|
 XUL_VER_MIN=$(echo $XUL_VERSION | sed -r -e 's/([^.]+\.[^.]+).*/\1/g')
 XUL_VER_MAX=$(echo $XUL_VERSION | sed -rn -e 's/([^.]+).*/\1.*/gp')
 
+HAVE_NSILMS_CHAR16_T=$({ cat <<EOF; } | $CXX $XUL_CFLAGS $GNOME_CFLAGS $CXXFLAGS -x c++ -w -c -o /dev/null - 2>/dev/null && echo 1 || echo 0
+#include "$SRC_GNOME_KEYRING_H"
+NS_IMETHODIMP GnomeKeyring::GetAllDisabledHosts(uint32_t *count, char16_t * **hostnames) { return NS_OK; }
+EOF
+)
+
 HAVE_NSILMS_GETISLOGGEDIN=$({ cat <<EOF; } | $CXX $XUL_CFLAGS $GNOME_CFLAGS $CXXFLAGS -x c++ -w -c -o /dev/null - 2>/dev/null && echo 1 || echo 0
 #include "$SRC_GNOME_KEYRING_H"
 NS_IMETHODIMP GnomeKeyring::GetIsLoggedIn(bool *aIsLoggedIn) { return NS_OK; }
@@ -42,7 +48,7 @@ $CXX $SRC_XPCOM_ABI_CPP -DHAVE_MOZ_BUG_956507="$HAVE_MOZ_BUG_956507" -o "$DST_XP
 PLATFORM="$("$DST_XPCOM_ABI")"
 
 for var in XUL_VERSION XUL_VER_MIN XUL_VER_MAX PLATFORM \
-  HAVE_NSILMS_GETISLOGGEDIN HAVE_NSILMS_INITWITHFILE_2 HAVE_MOZ_BUG_956507 HAVE_MOZGLUE; do
+  HAVE_NSILMS_CHAR16_T HAVE_NSILMS_GETISLOGGEDIN HAVE_NSILMS_INITWITHFILE_2 HAVE_MOZ_BUG_956507 HAVE_MOZGLUE; do
 	eval val=\$$var
 	echo export $var=$val
 done;
