@@ -57,6 +57,12 @@
 #include "nsIPrefService.h"
 #include "nsIPrefBranch.h"
 
+#if HAVE_NSILMS_CHAR16_T
+typedef char16_t _char16_t;
+#else
+typedef PRUnichar _char16_t;
+#endif
+
 #pragma GCC visibility push(default)
 extern "C" {
 #include "gnome-keyring.h"
@@ -488,10 +494,10 @@ foundToLoginInfo(GnomeKeyringFound* found)
   return loginInfo;
 }
 
-PRUnichar *
+_char16_t *
 foundToHost(GnomeKeyringFound* found)
 {
-  PRUnichar *host = NULL;
+  _char16_t *host = NULL;
 
   GnomeKeyringAttribute *attrArray =
     (GnomeKeyringAttribute *)found->attributes->data;
@@ -782,7 +788,7 @@ NS_IMETHODIMP GnomeKeyring::SearchLogins(PRUint32 *count,
 }
 
 NS_IMETHODIMP GnomeKeyring::GetAllDisabledHosts(PRUint32 *aCount,
-                                                PRUnichar ***aHostnames)
+                                                _char16_t ***aHostnames)
 {
   AutoFoundList foundList;
   GnomeKeyringResult result = findHostItemsAll(&foundList);
