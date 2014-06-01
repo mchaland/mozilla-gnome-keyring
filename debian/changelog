@@ -1,9 +1,9 @@
-mozilla-gnome-keyring (0.6.11-1) UNRELEASED; urgency=medium
+mozilla-gnome-keyring (0.6.11-1) unstable; urgency=medium
 
   * New upstream release. (Closes: #749521)
   * Build for iceweasel 29 and icedove 30.
 
- -- Ximin Luo <infinity0@pwned.gg>  Sun, 30 Mar 2014 16:19:11 +0100
+ -- Ximin Luo <infinity0@pwned.gg>  Sun, 01 Jun 2014 17:05:17 +0100
 
 mozilla-gnome-keyring (0.6.9-6) unstable; urgency=low
 
