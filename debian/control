@@ -2,8 +2,7 @@ Source: mozilla-gnome-keyring
 Section: web
 Priority: optional
 Maintainer: Ximin Luo <infinity0@pwned.gg>
-Build-Depends: cdbs,
-               debhelper (>= 7),
+Build-Depends: debhelper (>= 9),
                dpkg-dev (>= 1.16.1),
                icedove-dev (>= 30.0~),
                libgnome-keyring-dev,

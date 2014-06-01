@@ -1,8 +1,7 @@
-PACKAGE          ?= mozilla-gnome-keyring
-FULLNAME         ?= $(PACKAGE)-$(VERSION)
+PACKAGE          ?= $(shell cd .. && dh_listpackages | head -n1)
 
 XPI_DEFAULT = target.xpi
-XPI_TARGET = ../$(FULLNAME).xpi
+XPI_TARGET = ../$(PACKAGE).xpi
 
 ALLTMPDIR = link-xulrunner xpi-xulrunner link-icedove xpi-icedove xpi
 SEDADDR = \|Thunderbird|,\|</em:targetApplication>|
