@@ -14,3 +14,8 @@ override_dh_auto_build:
 
 override_dh_auto_clean:
 	make -C debian -f Makefile.combined clean-all
+
+# temporary measure until #750100 is fixed
+override_dh_gencontrol:
+	sed -i -e '/^xpi:\(Depends\|Breaks\)/s/)/~)/g' debian/xul-ext-gnome-keyring.substvars
+	dh_gencontrol
