@@ -1,0 +1,4 @@
+To use on gentoo, first install firefox from sources without minimal use flag.
+Following make command has to be used:
+LD_LIBRARY_PATH="/usr/lib/firefox:/usr/lib/firefox/sdk/lib" make CXXFLAGS="-I/usr/include/firefox -I/usr/include/nspr -Wall -fno-rtti -fno-exceptions -fPIC -std=gnu++11 -D__STDC_LIMIT_MACROS" LDFLAGS="-L/usr/lib/firefox/sdk/lib -L/usr/lib/firefox -lxpcomglue_s -lxul -lmozalloc -lmozsqlite3 -lplds4 -lplc4 -lnspr4 -ldl"
+
